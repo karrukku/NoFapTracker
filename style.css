@@ -1,0 +1,222 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #121212, #2c2c2c);
+  color: #f4f4f4;
+  overflow-x: hidden;
+}
+
+header {
+  background: rgba(26, 26, 26, 0.95);
+  padding: 3rem;
+  text-align: center;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+header h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+  text-shadow: 0 0 5px #e91e63aa;
+}
+
+header p {
+  color: #ccc;
+  font-size: 1.1rem;
+  font-style: italic;
+}
+
+section {
+  padding: 3rem 2rem;
+  max-width: 1000px;
+  margin: 3rem auto;
+}
+
+.card {
+  background: rgba(31, 31, 31, 0.85);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  transition: transform 0.4s ease, background 0.4s ease;
+  backdrop-filter: blur(8px);
+}
+
+.card:hover {
+  background: rgba(36, 36, 36, 0.9);
+  transform: translateY(-10px) scale(1.01);
+}
+
+input, textarea, button {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  font-size: 1.1rem;
+  border-radius: 15px;
+  border: none;
+  font-family: inherit;
+  transition: 0.3s ease;
+}
+
+input, textarea {
+  background: #2a2a2a;
+  color: #f4f4f4;
+  border: 2px solid #444;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border: 2px solid #e91e63;
+  box-shadow: 0 0 10px #e91e6388;
+}
+
+button {
+  background: linear-gradient(135deg, #e91e63, #ff4081);
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
+}
+
+button:hover {
+  background: linear-gradient(135deg, #ff4081, #e91e63);
+  transform: scale(1.07);
+  box-shadow: 0 6px 25px rgba(233, 30, 99, 0.6);
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 15px rgba(233, 30, 99, 0.7);
+}
+
+iframe {
+  border-radius: 20px;
+  border: none;
+  width: 100%;
+  height: 500px;
+  margin-top: 2rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.progress-bar {
+  height: 20px;
+  background: linear-gradient(90deg, #00c853, #76ff03);
+  border-radius: 10px;
+  margin-top: 1rem;
+  box-shadow: 0 0 8px rgba(0, 255, 128, 0.5);
+  transition: width 0.4s ease;
+}
+
+.reply-box {
+  background-color: #333;
+  color: #fff;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+section h2 {
+  font-size: 1.8rem;
+  color: #fff;
+  margin-bottom: 1rem;
+  border-left: 4px solid #e91e63;
+  padding-left: 1rem;
+}
+
+section p {
+  font-size: 1.2rem;
+  line-height: 1.7;
+}
+
+#streakStatus {
+  color: #aaa;
+  font-size: 0.95rem;
+  text-shadow: 0 0 3px #000;
+}
+
+#motivation {
+  font-size: 1.4rem;
+  font-style: italic;
+  color: #e91e63;
+  text-shadow: 0 0 5px #e91e63aa;
+}
+
+input[type="date"] {
+  background: #2a2a2a;
+  color: #fff;
+  border-radius: 12px;
+  border: 2px solid #444;
+  padding: 1rem;
+}
+
+/* 🔁 Smooth Responsiveness */
+@media (max-width: 768px) {
+  section {
+    padding: 2rem 1rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+  }
+
+  header h1 {
+    font-size: 2.2rem;
+  }
+
+  button {
+    font-size: 1rem;
+  }
+}
+/* Make input boxes fully responsive */
+input[type="text"],
+input[type="email"],
+input[type="date"],
+input[type="number"],
+textarea,
+button {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0.9rem;
+  margin-top: 0.75rem;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+/* Mobile tweak */
+@media screen and (max-width: 600px) {
+  input,
+  textarea,
+  button {
+    font-size: 0.95rem;
+  }
+}
+
+/* Responsive Fixes */
+input[type="text"],
+input[type="email"],
+input[type="date"],
+input[type="number"],
+textarea,
+button {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0.9rem;
+  margin-top: 0.75rem;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+@media screen and (max-width: 600px) {
+  input,
+  textarea,
+  button {
+    font-size: 0.95rem;
+  }
+}
+
+

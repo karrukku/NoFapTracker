@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(function() {
+          console.log('Service Worker Registered');
+        })
+        .catch(function(error) {
+          console.log('Service Worker Registration failed:', error);
+        });
+    }
+  </script>
+
+  <link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NoFap Assistant | Project R.E.A.L</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js CDN -->
+</head>
+<body>
+
+<header>
+  <h1>NoFap Assistant</h1>
+  <p>A space to grow, reflect, and conquer your urges. You're not alone.</p>
+</header>
+
+<!-- Streak Tracking Section -->
+<section class="card">
+  <h2>Track Your Streak</h2>
+  <input type="date" id="startDate" />
+  <button id="updateStreakBtn">Update Streak</button>
+  <button id="resetStreakBtn">Reset Streak</button> <!-- Reset Streak Button -->
+  <p>Days Clean: <span id="days">0</span></p>
+  <p id="streakStatus" style="color: #ccc; font-size: 0.9rem;"></p>
+  
+  <!-- Streak Progress Bar -->
+  <div class="progress-bar" id="progressBar" style="width: 0%; height: 20px; background-color: green;"></div>
+
+  <!-- Streak Tracking Graph -->
+  <canvas id="streakChart" width="400" height="200"></canvas>
+</section>
+
+<!-- Mood Tracker Section -->
+<section class="card">
+  <h2>Mood Tracker</h2>
+  <div id="moodEmojis" style="font-size: 2rem;">
+    <span class="mood" data-mood="happy">😊 Happy</span>
+    <span class="mood" data-mood="neutral">😐 Neutral</span>
+    <span class="mood" data-mood="sad">😞 Sad</span>
+    <span class="mood" data-mood="angry">😠 Angry</span>
+    <span class="mood" data-mood="stressed">😟 Stressed</span>
+  </div>
+  <p id="selectedMoodText">Select your mood for today.</p>
+  <p id="moodDescription">Click on an emoji to select your mood.</p>
+  <button id="saveMoodBtn">Save Mood</button>
+  
+  <h3>Mood History</h3>
+  <ul id="moodHistory"></ul>
+</section>
+
+<!-- Motivation of the Day Section -->
+<section class="card">
+  <h2>Motivation of the Day</h2>
+  <p id="motivation">“Discipline is choosing between what you want now and what you want most.”</p>
+  <button id="newQuoteBtn">Get Another Quote</button>
+</section>
+
+<!-- Task Prioritization Section -->
+<section class="card">
+  <h2>Prioritize Your Day</h2>
+  <textarea id="taskInput" rows="5" placeholder="Write down your tasks..."></textarea>
+  <button id="saveTaskBtn">Save Tasks</button>
+</section>
+
+<!-- Assistant Chat Section -->
+<section class="card">
+  <h2>Ask Your Assistant</h2>
+  <textarea id="chatInput" placeholder="Type your thought or struggle..."></textarea>
+  <button id="getReplyBtn">Send</button>
+  <div id="aiResponse" class="reply-box" style="margin-top: 1rem; background: #2c2c2c; padding: 1rem; border-radius: 8px;"></div>
+</section>
+
+<!-- Daily Journal Section -->
+<section class="card">
+  <h2>Daily Journal</h2>
+  <textarea id="journal" rows="8" placeholder="Write your thoughts..."></textarea>
+  <button id="saveJournalBtn">Save</button>
+  <button id="loadJournalBtn">Load Last Entry</button>
+  <button id="clearJournalBtn">Clear Journal</button>
+</section>
+
+<!-- Emergency Tools Section -->
+<section class="card">
+  <h2>Emergency Tools</h2>
+  <button onclick="alert('Cold shower – go now.')">Cold Shower</button>
+  <button onclick="alert('Drop and do 20 pushups.')">Pushups</button>
+  <button onclick="alert('Breathe: in 4s, hold 4s, out 4s.')">Breathing Exercise</button>
+</section>
+
+<!-- Data Export Section -->
+<section class="card">
+  <h2>Data Export</h2>
+  <button id="exportDataBtn">Export Data</button>
+</section>
+
+<script>
+// Journal functionality
+
+// Function to load the last journal entry from localStorage
+document.getElementById("loadJournalBtn").onclick = function() {
+  const journalEntry = localStorage.getItem("journalEntry");
+  if (journalEntry) {
+    document.getElementById("journal").value = journalEntry;
+  } else {
+    alert("No journal entry found.");
+  }
+};
+
+// Function to save the journal entry to localStorage
+document.getElementById("saveJournalBtn").onclick = function() {
+  const journalText = document.getElementById("journal").value.trim();
+  if (journalText) {
+    localStorage.setItem("journalEntry", journalText);
+    alert("Journal saved!");
+  } else {
+    alert("Please write something in the journal.");
+  }
+};
+
+// Function to clear the journal entry from both localStorage and the text area
+document.getElementById("clearJournalBtn").onclick = function() {
+  localStorage.removeItem("journalEntry");
+  document.getElementById("journal").value = "";
+  alert("Journal cleared!");
+};
+
+// Streak tracking logic
+let startDate;
+let streakDays = 0;
+let streakGraphData = [];
+
+document.getElementById('updateStreakBtn').onclick = function() {
+  const startDateInput = document.getElementById('startDate').value;
+  if (startDateInput) {
+    startDate = new Date(startDateInput);
+    const currentDate = new Date();
+    const timeDiff = currentDate - startDate;
+    streakDays = Math.floor(timeDiff / (1000 * 3600 * 24));
+    document.getElementById('days').textContent = streakDays;
+    updateProgressBar(streakDays);
+    updateStreakChart(streakDays);
+  } else {
+    alert('Please select a start date.');
+  }
+};
+
+document.getElementById('resetStreakBtn').onclick = function() {
+  streakDays = 0;
+  document.getElementById('days').textContent = streakDays;
+  document.getElementById('progressBar').style.width = '0%';
+  updateStreakChart(0);
+};
+
+function updateProgressBar(days) {
+  const progress = Math.min((days / 30) * 100, 100); // 30 days max progress
+  document.getElementById('progressBar').style.width = progress + '%';
+}
+
+let streakChart = new Chart(document.getElementById('streakChart'), {
+  type: 'line',
+  data: {
+    labels: [],
+    datasets: [{
+      label: 'Days Clean',
+      data: streakGraphData,
+      borderColor: 'green',
+      fill: false
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      x: { beginAtZero: true },
+      y: { beginAtZero: true }
+    }
+  }
+});
+
+function updateStreakChart(days) {
+  const currentDate = new Date().toLocaleDateString();
+  streakGraphData.push({x: currentDate, y: days});
+  streakChart.data.labels.push(currentDate);
+  streakChart.update();
+}
+
+// Mood Tracker functionality
+let selectedMood = null;
+
+document.querySelectorAll('.mood').forEach(moodElement => {
+  moodElement.onclick = function() {
+    selectedMood = moodElement.getAttribute('data-mood');
+    document.getElementById('selectedMoodText').textContent = 'Your mood today: ' + selectedMood;
+    document.getElementById('moodDescription').textContent = `You selected ${selectedMood}.`;
+  };
+});
+
+document.getElementById('saveMoodBtn').onclick = function() {
+  if (selectedMood) {
+    const moodHistory = document.getElementById('moodHistory');
+    const newMoodItem = document.createElement('li');
+    newMoodItem.textContent = `${selectedMood} - ${new Date().toLocaleDateString()}`;
+    moodHistory.appendChild(newMoodItem);
+    selectedMood = null;
+    document.getElementById('selectedMoodText').textContent = 'Select your mood for today.';
+    document.getElementById('moodDescription').textContent = 'Click on an emoji to select your mood.';
+  } else {
+    alert('Please select a mood.');
+  }
+};
+
+// Motivation of the Day
+const quotes = [
+  "Discipline is choosing between what you want now and what you want most.",
+  "Your future is created by what you do today, not tomorrow.",
+  "Don’t count the days, make the days count.",
+  "Great things never come from comfort zones.",
+  "Success is the sum of small efforts, repeated day in and day out."
+];
+
+document.getElementById('newQuoteBtn').onclick = function() {
+  const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+  document.getElementById('motivation').textContent = randomQuote;
+};
+
+// Assistant Chat
+document.getElementById('getReplyBtn').onclick = function() {
+  const chatInput = document.getElementById('chatInput').value.trim();
+  const aiResponseBox = document.getElementById('aiResponse');
+  if (chatInput) {
+    aiResponseBox.textContent = "Processing..."; // Placeholder
+    setTimeout(() => {
+      aiResponseBox.textContent = "You're not alone, stay strong!";
+    }, 1500);
+  } else {
+    alert('Please type something.');
+  }
+};
+
+// Task Prioritization
+document.getElementById('saveTaskBtn').onclick = function() {
+  const taskInput = document.getElementById('taskInput').value.trim();
+  if (taskInput) {
+    alert("Tasks saved!");
+  } else {
+    alert("Please write down some tasks.");
+  }
+};
+
+// Data Export
+document.getElementById('exportDataBtn').onclick = function() {
+  alert("Exporting data...");
+};
+</script>
+
+</body>
+</html>
